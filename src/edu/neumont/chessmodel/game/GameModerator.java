@@ -1,6 +1,7 @@
 package edu.neumont.chessmodel.game;
 
 import edu.neumont.chessmodel.finder.CheckFinder;
+import edu.neumont.chessmodel.finder.CheckMateFinder;
 import edu.neumont.chessmodel.finder.DestinationFinder;
 import edu.neumont.chessmodel.finder.EnPassantFinder;
 
@@ -11,6 +12,7 @@ public class GameModerator implements ChessBoardListener {
 	private DestinationFinder destinationFinder;
 	private CheckFinder checkFinder;
 	private EnPassantFinder enPassantFinder;
+	private CheckMateFinder checkMateFinder;
 	private ChessBoard board;
 	
 	private void initializeGame(Player player1, Player player2) {
@@ -19,18 +21,19 @@ public class GameModerator implements ChessBoardListener {
 		destinationFinder = new DestinationFinder();
 		checkFinder = new CheckFinder();
 		enPassantFinder = new EnPassantFinder();
+		checkMateFinder = new CheckMateFinder();
 		board = new ChessBoard();
 		board.addChessBoardListener(this);
 	}
 	
 	@Override
 	public void pieceMoved(ChessBoard board) {
-		validateCheck();
-		validateAllDestinations();
-		validateEnPassant();
+		findDestinationsInCheck();
+		findAllDestinations();
+		findEnPassantDestinations();
 	}
 	
-	private void validateCheck(){
+	private void findDestinationsInCheck(){
 		Destinations destinationsInCheck = checkFinder.find(board);
 		// if the king is currently in check. ask the CheckMateFinder if the
 		// player's king is in checkmate.
@@ -38,13 +41,17 @@ public class GameModerator implements ChessBoardListener {
 		// use the returned destinations to determine if the move is valid
 	}
 	
-	private void validateAllDestinations(){
+	private void findAllDestinations(){
 		Destinations allValidMoves = destinationFinder.find(board);
 		// use the returned destinations to determine if the move is valid
 	}
 	
-	private void validateEnPassant(){
+	private void findEnPassantDestinations(){
 		Destinations enPassantableLocations = enPassantFinder.find(board);
 		// use the returned destinations to determine if the move is valid
+	}
+	
+	private void findDestinationsInCheckMate(){
+		Destinations movesInCheckMate = checkMateFinder.find(board);
 	}
 }
